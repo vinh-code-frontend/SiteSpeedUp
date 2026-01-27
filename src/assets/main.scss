@@ -1,0 +1,9 @@
+@use './var.scss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--el-font-family);
+  font-size: var(--el-font-size-base);
+}
