@@ -1,18 +1,20 @@
-import { defineStore } from 'pinia'
-import type { User } from 'firebase/auth'
+import { defineStore } from 'pinia';
+import type { User } from 'firebase/auth';
 
 type IState = {
-  loginUser: User | null
-}
+  loginUser: User | null;
+};
 
 export const useGlobalStore = defineStore('global', {
   state: (): IState => ({
-    loginUser: null,
+    loginUser: null
   }),
   actions: {
     setLoginUser(loginUser: IState['loginUser']) {
-      this.loginUser = loginUser
-      console.log(this.loginUser)
-    },
-  },
-})
+      if (!this.loginUser && !loginUser) {
+        return;
+      }
+      this.loginUser = loginUser;
+    }
+  }
+});

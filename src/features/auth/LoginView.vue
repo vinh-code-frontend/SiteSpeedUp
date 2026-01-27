@@ -1,61 +1,64 @@
 <script setup lang="ts">
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { ref, reactive } from 'vue';
+import { ElMessage } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
+import { useRouter } from 'vue-router';
 
-const auth = getAuth()
+const auth = getAuth();
 const form = reactive({
   email: '',
-  password: '',
-})
-const loading = ref(false)
+  password: ''
+});
+const loading = ref(false);
 
 const rules: FormRules = {
   email: [
     {
       required: true,
-      message: 'Email is required',
+      message: 'Email is required'
     },
     {
       type: 'email',
-      message: 'Invalid email',
-    },
+      message: 'Invalid email'
+    }
   ],
   password: [
     {
       required: true,
-      message: 'Password is required',
+      message: 'Password is required'
     },
     {
       min: 6,
-      message: 'Password must be at least 6 characters',
-    },
-  ],
-}
-const formRef = ref<FormInstance>()
+      message: 'Password must be at least 6 characters'
+    }
+  ]
+};
+const formRef = ref<FormInstance>();
+const router = useRouter();
 
 const onLogin = async () => {
   if (!formRef.value) {
-    return
+    return;
   }
   await formRef.value.validate(async (valid: boolean) => {
     if (!valid) {
-      return
+      return;
     }
-    loading.value = true
+    loading.value = true;
     try {
-      await signInWithEmailAndPassword(auth, form.email, form.password)
-      ElMessage.success('Login successful!')
+      await signInWithEmailAndPassword(auth, form.email, form.password);
+      ElMessage.success('Login successful!');
+      router.push('/');
       // Optionally, redirect or clear form here
     } catch (error) {
-      const errMsg = error instanceof Error ? error.message : 'Login failed'
-      ElMessage.error(errMsg)
+      const errMsg = error instanceof Error ? error.message : 'Login failed';
+      ElMessage.error(errMsg);
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  })
-}
+  });
+};
 </script>
 
 <template>

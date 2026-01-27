@@ -4,16 +4,20 @@ import { UserFilled, SwitchButton } from '@element-plus/icons-vue';
 import { computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getAuth, signOut } from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import { logOut } from '@/firebase/services/auth.service';
 
 const store = useGlobalStore();
 const loginUser = computed(() => store.loginUser);
-console.log(loginUser.value);
+const router = useRouter();
+const auth = getAuth();
 
 const onLogout = async () => {
   try {
-    await signOut(getAuth());
+    await logOut();
     ElMessage.success('Logged out successfully');
     // Optionally, update store or redirect
+    router.push('/auth/login');
   } catch {
     ElMessage.error('Logout failed');
   }
