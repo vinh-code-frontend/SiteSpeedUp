@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia';
-import type { User } from 'firebase/auth';
+import type { IState } from './types';
+import { get } from '@/firebase/services/firestore.service';
 
-type IState = {
-  loginUser: User | null;
-};
-
-export const useGlobalStore = defineStore('global', {
+export const useStore = defineStore('global', {
   state: (): IState => ({
-    loginUser: null
+    loginUser: null,
+    tenants: []
   }),
   actions: {
     setLoginUser(loginUser: IState['loginUser']) {
@@ -15,6 +13,12 @@ export const useGlobalStore = defineStore('global', {
         return;
       }
       this.loginUser = loginUser;
+    },
+    async getTenants() {
+      const result = await get<Record<string, any>[]>('tenant', {
+        orderBy: { field: 'createdAt', direction: 'desc' }
+      });
+      console.log(result);
     }
   }
 });

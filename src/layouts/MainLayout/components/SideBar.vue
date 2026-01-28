@@ -1,23 +1,34 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { Monitor, Brush } from '@element-plus/icons-vue';
+import { Monitor, Brush, MapLocation } from '@element-plus/icons-vue';
 import { useRoute } from 'vue-router';
 
 const isCollapse = ref(false);
 
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-
 const route = useRoute();
+
+const menu = [
+  {
+    path: '/tenant',
+    title: 'Tenant Management',
+    icon: MapLocation
+  },
+  {
+    path: '/site',
+    title: 'Site Management',
+    icon: Monitor
+  },
+  {
+    path: '/explorer',
+    title: 'API Explorer',
+    icon: Brush
+  }
+];
 </script>
 
 <template>
   <div class="relative border-r border-gray-300 w-52 flex-shrink-0">
-    <div class="text-3xl font-bold px-[20px] py-1 italic h-14 flex justify-center">
+    <div class="text-3xl font-bold px-[20px] py-1 italic h-14 flex">
       <img src="../../../assets/ssu.png" />
     </div>
     <div class="h-[calc(100dvh-3.5rem)]">
@@ -27,16 +38,10 @@ const route = useRoute();
           class="w-[var(--sidebar-width)] !border-0"
           :collapse="isCollapse"
           router
-          @open="handleOpen"
-          @close="handleClose"
         >
-          <ElMenuItem index="/site">
-            <ElIcon size="14" class="!mr-2"><Monitor /></ElIcon>
-            <template #title>{{ 'Site Management' }}</template>
-          </ElMenuItem>
-          <ElMenuItem index="/explorer">
-            <ElIcon size="14" class="!mr-2"><Brush /></ElIcon>
-            <template #title>{{ 'API Explorer' }}</template>
+          <ElMenuItem v-for="item in menu" :key="item.path" :index="item.path">
+            <ElIcon size="14" class="!mr-2"><Component :is="item.icon" /></ElIcon>
+            <template #title>{{ item.title }}</template>
           </ElMenuItem>
         </ElMenu>
       </ElScrollbar>

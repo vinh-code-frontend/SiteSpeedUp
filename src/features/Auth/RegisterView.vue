@@ -1,61 +1,76 @@
 <script setup lang="ts">
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { ref, reactive } from 'vue';
+import { ElMessage } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
+import { useRouter } from 'vue-router';
 
-const auth = getAuth()
+const auth = getAuth();
 const form = reactive({
   email: '',
   password: '',
-})
-const loading = ref(false)
+  displayName: ''
+});
+const loading = ref(false);
+const router = useRouter();
 
 const rules: FormRules = {
   email: [
     {
       required: true,
-      message: 'Email is required',
+      message: 'Email is required'
     },
     {
       type: 'email',
-      message: 'Invalid email',
-    },
+      message: 'Invalid email'
+    }
   ],
   password: [
     {
       required: true,
-      message: 'Password is required',
+      message: 'Password is required'
     },
     {
       min: 6,
-      message: 'Password must be at least 6 characters',
-    },
+      message: 'Password must be at least 6 characters'
+    }
   ],
-}
-const formRef = ref<FormInstance>()
+  displayName: [
+    {
+      required: true,
+      message: 'Display name is required'
+    }
+  ]
+};
+const formRef = ref<FormInstance>();
 
 const onRegister = async () => {
   if (!formRef.value) {
-    return
+    return;
   }
   await formRef.value.validate(async (valid: boolean) => {
     if (!valid) {
-      return
+      return;
     }
-    loading.value = true
+    loading.value = true;
     try {
-      await createUserWithEmailAndPassword(auth, form.email, form.password)
-      ElMessage.success('Registration successful!')
+      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: form.displayName
+        });
+      }
+      ElMessage.success('Registration successful!');
+      router.push('/');
       // Optionally, redirect or clear form here
     } catch (error) {
-      const errMsg = error instanceof Error ? error.message : 'Registration failed'
-      ElMessage.error(errMsg)
+      const errMsg = error instanceof Error ? error.message : 'Registration failed';
+      ElMessage.error(errMsg);
     } finally {
-      loading.value = false
+      loading.value = false;
     }
-  })
-}
+  });
+};
 </script>
 
 <template>
@@ -77,9 +92,12 @@ const onRegister = async () => {
       <el-form-item label="Password" prop="password">
         <el-input v-model="form.password" type="password" autocomplete="new-password" />
       </el-form-item>
+      <el-form-item label="Display Name" prop="displayName">
+        <el-input v-model="form.displayName" />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" :loading="loading" @click="onRegister">Register</el-button>
-        <el-button type="text" @click="$router.push({ name: 'Login' })">Go to Login</el-button>
+        <el-button type="text" @click="router.push('/auth/login')">Go to Login</el-button>
       </el-form-item>
     </el-form>
   </div>

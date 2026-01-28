@@ -5,12 +5,12 @@ import SideBar from './components/SideBar.vue';
 
 <template>
   <div id="manage-layout" class="flex">
-    <SideBar />
+    <SideBar class="hidden sm:block" />
     <main id="manage-main" class="w-full transition-all h-dvh">
       <TopBar />
-      <div class="bg-slate-200 h-[calc(100dvh-3.5rem)]">
+      <div class="h-[calc(100dvh-3.5rem)]">
         <ElScrollbar>
-          <div class="p-3"><RouterView /></div>
+          <RouterView class="p-3 min-h-[calc(100dvh-3.5rem)]" />
         </ElScrollbar>
       </div>
     </main>

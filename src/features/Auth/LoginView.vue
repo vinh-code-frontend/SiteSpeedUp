@@ -82,9 +82,7 @@ const onLogin = async () => {
       </el-form-item>
       <el-form-item>
         <el-button type="primary" :loading="loading" @click="onLogin">Login</el-button>
-        <el-button type="text" @click="$router.push({ name: 'Register' })"
-          >Go to Register</el-button
-        >
+        <el-button type="text" @click="router.push('/auth/register')">Go to Register</el-button>
       </el-form-item>
     </el-form>
   </div>
