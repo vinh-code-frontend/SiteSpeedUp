@@ -7,11 +7,10 @@ import { useStore } from '@/stores/global';
 
 // Giả sử bạn có biến loginUser lấy từ store hoặc context
 // Thay thế dòng dưới bằng logic thực tế lấy userId đăng nhập
-const loginUser = { id: 'userId' };
 
+const tenantFormRef = ref<InstanceType<typeof TenantForm>>();
 const tenants = ref<ITenant[]>([]);
 const loading = ref(true);
-const showDrawer = ref(false);
 const store = useStore();
 
 const fetchTenants = async () => {
@@ -33,33 +32,17 @@ const handleCreated = () => {
 </script>
 
 <template>
-  <div>
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 16px;
-      "
-    >
-      <span>Tenant</span>
-      <ElButton type="primary" size="default" plain @click="showDrawer = true">Add Tenant</ElButton>
+  <div v-loading="loading">
+    <div class="flex justify-between gap-2 items-center">
+      <span>Total tenants: {{ tenants.length }}</span>
+      <ElButton type="primary" size="default" plain @click="tenantFormRef?.openForm()"
+        >Add Tenant</ElButton
+      >
     </div>
-    <template v-if="loading">
-      <div>Loading...</div>
-    </template>
-    <template v-else-if="!tenants.length">
-      <ElEmpty description="There are no available tenants" />
-    </template>
-    <template v-else>
-      <ul>
-        <li v-for="tenant in tenants" :key="tenant.id">
-          <strong>{{ tenant.title }}</strong> ({{ tenant.createdAt }})
-        </li>
-      </ul>
-    </template>
-    <TenantForm v-model="showDrawer" :user-id="loginUser.id" @created="handleCreated" />
+    <ElEmpty v-if="!tenants.length" description="There are no available tenants" />
+    <ElCard v-for="item in tenants" :key="item.id">{{ item.title }}</ElCard>
   </div>
+  <TenantForm ref="tenantFormRef" />
 </template>
 
 <style scoped lang="scss"></style>

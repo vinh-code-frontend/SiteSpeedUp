@@ -10,7 +10,9 @@ import SideBar from './components/SideBar.vue';
       <TopBar />
       <div class="h-[calc(100dvh-3.5rem)]">
         <ElScrollbar>
-          <RouterView class="p-3 min-h-[calc(100dvh-3.5rem)]" />
+          <div class="p-3 min-h-[calc(100dvh-3.5rem)]">
+            <RouterView />
+          </div>
         </ElScrollbar>
       </div>
     </main>

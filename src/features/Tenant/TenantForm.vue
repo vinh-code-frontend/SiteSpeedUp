@@ -5,17 +5,15 @@ import { add, get } from '@/firebase/services/firestore.service';
 import type { ITenant } from './model';
 import { serverTimestamp } from 'firebase/firestore';
 import { useStore } from '@/stores/global';
+import { pingTenant } from '@/utils/sharepoint';
 
-const props = defineProps<{
-  modelValue: boolean;
-  userId: string;
-}>();
 const emit = defineEmits(['update:modelValue', 'created']);
 const store = useStore();
 const loginUser = computed(() => store.loginUser);
 
+const visible = ref(false);
 const formRef = ref();
-const form = ref<Partial<ITenant>>({
+const form = ref({
   title: '',
   isPrivate: false
 });
@@ -34,7 +32,6 @@ const rules: FormRules = {
           wheres: [{ field: 'title', op: '==', value }],
           limit: 1
         });
-        console.log(exist);
         if (exist.length > 0) {
           callback('Tenant name must be unique');
         } else {
@@ -43,6 +40,10 @@ const rules: FormRules = {
       }
     }
   ]
+};
+
+const openForm = (item?: ITenant) => {
+  visible.value = true;
 };
 
 const handleClose = () => {
@@ -61,7 +62,12 @@ const handleSubmit = async () => {
     }
     loading.value = true;
 
-    const data: ITenant = {
+    const isTenantExisting = await pingTenant(form.value.title);
+    if (!isTenantExisting) {
+      return;
+    }
+
+    const data = {
       title: form.value.title!,
       userId: loginUser.value?.uid || '',
       userDisplayName: loginUser.value?.displayName || '',
@@ -69,7 +75,7 @@ const handleSubmit = async () => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     };
-    await add<ITenant>('tenant', data);
+    await add('tenant', data);
     ElMessage.success('Tenant created successfully');
     emit('created');
     handleClose();
@@ -81,15 +87,14 @@ const handleSubmit = async () => {
     loading.value = false;
   }
 };
+
+defineExpose({
+  openForm
+});
 </script>
 
 <template>
-  <ElDialog
-    :model-value="modelValue"
-    title="Add Tenant"
-    class="max-w-md !w-[96%]"
-    @close="handleClose"
-  >
+  <ElDialog v-model="visible" title="Add Tenant" class="max-w-md !w-[96%]" @close="handleClose">
     <ElForm
       ref="formRef"
       :model="form"
