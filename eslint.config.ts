@@ -29,12 +29,10 @@ export default defineConfigWithVueTs(
   {
     rules: {
       'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { vars: 'all', args: 'after-used', ignoreRestSiblings: false }
-      ],
+      '@typescript-eslint/no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
       '@typescript-eslint/no-explicit-any': ['off'],
-      curly: ['warn', 'all'] // Warn if braces are not used for all control statements
+      curly: ['warn', 'all'], // Warn if braces are not used for all control statements
+      'vue/multi-word-component-names': ['off']
     }
   }
 );

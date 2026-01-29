@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { IState } from './types';
-import { get } from '@/firebase/services/firestore.service';
+import { formatFSTime, get } from '@/firebase/services/firestore.service';
 
 export const useStore = defineStore('global', {
   state: (): IState => ({
@@ -15,10 +15,18 @@ export const useStore = defineStore('global', {
       this.loginUser = loginUser;
     },
     async getTenants() {
-      const result = await get<Record<string, any>[]>('tenant', {
+      const result = await get<Record<string, any>>('tenant', {
         orderBy: { field: 'createdAt', direction: 'desc' }
       });
-      console.log(result);
+      this.tenants = result.map((item) => ({
+        id: item.id,
+        title: item.title,
+        userId: item.userId,
+        userDisplayName: item.userDisplayName,
+        isPrivate: item.isPrivate,
+        createdAt: formatFSTime(item.createdAt),
+        updatedAt: formatFSTime(item.updatedAt)
+      }));
     }
   }
 });

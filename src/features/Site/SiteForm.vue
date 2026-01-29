@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { ElMessage, type FormRules } from 'element-plus';
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { add, get } from '@/firebase/services/firestore.service';
-import type { ITenant } from './model';
 import { serverTimestamp } from 'firebase/firestore';
 import { useStore } from '@/stores/global';
 import { pingTenant } from '@/utils/sharepoint';
+import { useWindowSize } from '@vueuse/core';
 
 const emit = defineEmits<{
   refresh: [];
@@ -13,8 +13,12 @@ const emit = defineEmits<{
 const store = useStore();
 const loginUser = computed(() => store.loginUser);
 
-const visible = ref(false);
-const formRef = ref();
+const visible = ref(true);
+const active = ref(0);
+const { width, height } = useWindowSize();
+
+const isMobile = computed(() => width.value < 768);
+const formRef = ref<FormInstance>();
 const form = ref({
   title: '',
   isPrivate: false
@@ -30,7 +34,7 @@ const rules: FormRules = {
         if (!value.trim()) {
           return callback();
         }
-        const exist = await get<ITenant>('tenant', {
+        const exist = await get('tenant', {
           wheres: [{ field: 'title', op: '==', value: value.trim().toLowerCase() }],
           limit: 1
         });
@@ -61,7 +65,7 @@ const handleSubmit = async () => {
     if (!loginUser.value?.uid || !loginUser.value.displayName) {
       return;
     }
-    const isValid = await formRef.value.validate();
+    const isValid = await formRef.value?.validate();
 
     if (!isValid) {
       return;
@@ -100,15 +104,15 @@ defineExpose({
 </script>
 
 <template>
-  <ElDialog v-model="visible" title="Add Tenant" class="max-w-md !w-[96%]" destroy-on-close @close="handleClose">
-    <ElForm ref="formRef" :model="form" :rules="rules" label-position="top" require-asterisk-position="right" label-width="100px">
-      <ElFormItem label="Title" prop="title">
-        <ElInput v-model="form.title" placeholder="Enter tenant title" />
-      </ElFormItem>
-      <ElFormItem label="Private" prop="isPrivate">
-        <el-switch v-model="form.isPrivate" />
-      </ElFormItem>
-    </ElForm>
+  <ElDialog v-model="visible" title="Add Site" class="site-form-dialog overflow-hidden flex flex-col" :align-center="isMobile" body-class="flex-1" @close="handleClose">
+    <div class="flex-1">
+      <ElSteps :active="active" finish-status="success" process-status="finish">
+        <ElStep title="Step 1" />
+        <ElStep title="Step 2" />
+        <ElStep title="Step 3" />
+      </ElSteps>
+      <div style="height: 100%">s</div>
+    </div>
     <template #footer>
       <div class="flex justify-center gap-2">
         <ElButton type="primary" :loading="loading" @click="handleSubmit">Save</ElButton>
@@ -118,4 +122,15 @@ defineExpose({
   </ElDialog>
 </template>
 
-<style scoped></style>
+<style lang="scss">
+.site-form-dialog.el-dialog {
+  width: 96%;
+  height: 800px;
+}
+
+@media screen and (max-width: 640px) {
+  .site-form-dialog.el-dialog {
+    height: 96%;
+  }
+}
+</style>

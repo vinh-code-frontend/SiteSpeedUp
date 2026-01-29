@@ -3,13 +3,13 @@ import { useStore } from '@/stores/global';
 import { UserFilled, SwitchButton } from '@element-plus/icons-vue';
 import { computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { logOut } from '@/firebase/services/auth.service';
+import Breadcrumb from '@/components/Breadcrumb.vue';
 
 const store = useStore();
 const loginUser = computed(() => store.loginUser);
 const router = useRouter();
-const route = useRoute();
 
 const onLogout = async () => {
   try {
@@ -24,11 +24,9 @@ const onLogout = async () => {
 </script>
 
 <template>
-  <div id="topbar" class="flex gap-2 justify-between items-center h-14 shadow-md px-2">
+  <div id="topbar" class="flex gap-2 justify-between items-center h-14 shadow-[inset_0_-1px_0_0_var(--el-border-color)] px-2">
     <div class="text-xs font-bold">
-      <ElBreadcrumb>
-        <ElBreadcrumbItem>{{ route?.meta?.title }}</ElBreadcrumbItem>
-      </ElBreadcrumb>
+      <Breadcrumb />
     </div>
     <div class="flex items-center gap-2">
       <el-button type="default" circle @click="onLogout" :title="'Logout'">
@@ -42,4 +40,8 @@ const onLogout = async () => {
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+.el-breadcrumb__inner.is-link {
+  cursor: pointer;
+}
+</style>

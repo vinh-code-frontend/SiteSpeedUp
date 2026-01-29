@@ -1,29 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { Monitor, Brush, MapLocation } from '@element-plus/icons-vue';
 import { useRoute } from 'vue-router';
+import { menu } from '@/router/routes';
 
 const isCollapse = ref(false);
 
 const route = useRoute();
-
-const menu = [
-  {
-    path: '/tenant',
-    title: 'Tenant Management',
-    icon: MapLocation
-  },
-  {
-    path: '/site',
-    title: 'Site Management',
-    icon: Monitor
-  },
-  {
-    path: '/explorer',
-    title: 'API Explorer',
-    icon: Brush
-  }
-];
 </script>
 
 <template>
@@ -33,12 +15,7 @@ const menu = [
     </div>
     <div class="h-[calc(100dvh-3.5rem)]">
       <ElScrollbar>
-        <ElMenu
-          :default-active="route.path"
-          class="w-[var(--sidebar-width)] !border-0"
-          :collapse="isCollapse"
-          router
-        >
+        <ElMenu :default-active="route.path" class="w-[var(--sidebar-width)] !border-0" :collapse="isCollapse" router>
           <ElMenuItem v-for="item in menu" :key="item.path" :index="item.path">
             <ElIcon size="14" class="!mr-2"><Component :is="item.icon" /></ElIcon>
             <template #title>{{ item.title }}</template>
@@ -49,4 +26,13 @@ const menu = [
   </div>
 </template>
 
-<style></style>
+<style scoped lang="scss">
+:deep(.el-menu-item.is-active) {
+  background-color: var(--el-menu-hover-bg-color);
+}
+
+:deep(.el-menu-item:not(.is-active)):hover {
+  background-color: unset;
+  color: var(--el-color-primary);
+}
+</style>

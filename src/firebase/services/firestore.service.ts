@@ -30,11 +30,7 @@ const getCollectionRef = <T = DocumentData>(collectionName: string) => {
  * Get all documents
  */
 
-export const getAll = async <T>(
-  collectionName: string,
-  orderByField?: string,
-  orderDirection: 'asc' | 'desc' = 'asc'
-): Promise<(T & { id: string })[]> => {
+export const getAll = async <T>(collectionName: string, orderByField?: string, orderDirection: 'asc' | 'desc' = 'asc'): Promise<(T & { id: string })[]> => {
   const colRef = getCollectionRef<T>(collectionName);
   let q: CollectionReference<T> | import('firebase/firestore').Query<T> = colRef;
   if (orderByField) {
@@ -61,10 +57,7 @@ export interface FirestoreQueryOption {
   limit?: number;
 }
 
-export const get = async <T>(
-  collectionName: string,
-  options?: FirestoreQueryOption
-): Promise<(T & { id: string })[]> => {
+export const get = async <T>(collectionName: string, options?: FirestoreQueryOption): Promise<(T & { id: string })[]> => {
   const colRef = getCollectionRef<T>(collectionName);
   let q: CollectionReference<T> | import('firebase/firestore').Query<T> = colRef;
 
@@ -96,10 +89,7 @@ export const get = async <T>(
 /**
  * Get document by id
  */
-export const getById = async <T>(
-  collectionName: string,
-  id: string
-): Promise<(T & { id: string }) | null> => {
+export const getById = async <T>(collectionName: string, id: string): Promise<(T & { id: string }) | null> => {
   const docRef = doc(db, collectionName, id);
   const snapshot = await getDoc(docRef);
 
@@ -110,6 +100,27 @@ export const getById = async <T>(
   return {
     id: snapshot.id,
     ...(snapshot.data() as T)
+  };
+};
+
+/**
+ * Get document by title
+ */
+export const getByTitle = async <T extends Record<string, any>>(collectionName: string, title: string): Promise<T | null> => {
+  const colRef = getCollectionRef<T>(collectionName);
+  const q = query(colRef, where('title', '==', title), limit(1));
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const docSnap = snapshot.docs[0];
+
+  return {
+    id: docSnap.id,
+    ...(docSnap.data() as T)
   };
 };
 
@@ -125,11 +136,7 @@ export const add = async <T>(collectionName: string, data: T): Promise<string> =
 /**
  * Update document
  */
-export const update = async <T>(
-  collectionName: string,
-  id: string,
-  data: Partial<T>
-): Promise<void> => {
+export const update = async <T>(collectionName: string, id: string, data: Partial<T>): Promise<void> => {
   const docRef = doc(db, collectionName, id);
   await updateDoc(docRef, data);
 };
