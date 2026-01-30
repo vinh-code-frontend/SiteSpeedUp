@@ -1,13 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import SiteForm from './SiteForm.vue';
+import { useStore } from '@/stores/global';
 
 const siteFormRef = ref<InstanceType<typeof SiteForm>>();
 const tableData: any[] = [];
+const loading = ref(false);
+const store = useStore();
+
+const fetchData = async () => {
+  loading.value = true;
+  try {
+    await store.getTenants();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchData);
 </script>
 
 <template>
-  <div>
+  <div v-loading="loading">
     <div class="flex justify-between gap-2 items-center">
       <span>Total Sites: {{ tableData.length }}</span>
       <ElButton type="primary" size="default" plain @click="siteFormRef?.openForm()">Add Site</ElButton>

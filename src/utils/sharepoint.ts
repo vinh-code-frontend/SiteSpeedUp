@@ -12,6 +12,39 @@ export const pingTenant = async (tenantName: string) => {
   }
 };
 
+export function isValidUrl(value: string): boolean {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function normalizeSharePointSiteUrl(input: string): string {
+  const url = new URL(input);
+
+  const match = url.pathname.match(/^\/sites\/[^/]+/);
+
+  return `${url.origin}${match?.[0] ?? ''}`;
+}
+
+export const pingSite = async (site: string) => {
+  try {
+    let url = normalizeSharePointSiteUrl(site);
+    if (!url.startsWith('https://')) {
+      url = `https://${url}`;
+    }
+    await axios.get(`${url}/_api/web`);
+    return true;
+  } catch (error) {
+    if (error instanceof AxiosError && error.status === 403) {
+      return true;
+    }
+    return false;
+  }
+};
+
 export class SPGuideUrls {
   private tenantName?: string;
   private siteName?: string;
