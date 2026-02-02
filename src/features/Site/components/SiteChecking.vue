@@ -33,7 +33,7 @@ const rules: FormRules = {
           isPingDisable.value = true;
           return callback('Invalid Url!');
         }
-
+        value = value.trim();
         if (!value.startsWith('https://')) {
           isPingDisable.value = true;
           value = `https://${value}`;
@@ -42,6 +42,9 @@ const rules: FormRules = {
         if (!_isValidUrl) {
           isPingDisable.value = true;
           return callback('Invalid Url!');
+        }
+        if (!value.includes('/sites/')) {
+          return callback('Please enter a site');
         }
         const tenant = tenants.value.find((item) => item.id === model.value?.tenantId);
         if (!value.includes(`${tenant?.title}.sharepoint.com`)) {
@@ -67,7 +70,8 @@ const handlePing = async () => {
     ElNotification({
       title: 'Error',
       message: "This site doesn'n exist!",
-      type: 'error'
+      type: 'error',
+      duration: 3000
     });
   }
   loading.value = false;
@@ -96,7 +100,7 @@ defineExpose({
       <div class="flex w-full gap-2">
         <ElInput v-model="model.site" size="large" class="flex-1" placeholder="Enter your site..." @input="isSiteValid = false"></ElInput>
         <ElButton :type="isSiteValid ? 'success' : 'danger'" size="large" :disabled="isPingDisable || loading || isSiteValid" :loading="loading" @click="handlePing">
-          <ElIcon v-if="isSiteValid"><Check /></ElIcon>
+          <ElIcon v-if="isSiteValid" class="font-bold text-lg"><Check /></ElIcon>
           <span v-else>Ping</span>
         </ElButton>
       </div>

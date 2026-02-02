@@ -2,8 +2,9 @@
 import { computed, ref } from 'vue';
 import { useStore } from '@/stores/global';
 import { useWindowSize } from '@vueuse/core';
-import Step1 from './components/Step1.vue';
+import SiteChecking from './components/SiteChecking.vue';
 import type { ISiteForm } from './types';
+import AppRegNew from './components/AppRegNew.vue';
 
 const emit = defineEmits<{
   refresh: [];
@@ -20,7 +21,9 @@ const model = ref<ISiteForm>({
   site: ''
 });
 
-const step1Ref = ref<InstanceType<typeof Step1>>();
+const step1Ref = ref<InstanceType<typeof SiteChecking>>();
+const step2Ref = ref<InstanceType<typeof AppRegNew>>;
+
 const form = ref({
   title: '',
   isPrivate: false
@@ -72,7 +75,8 @@ defineExpose({
       </ElSteps>
     </div>
     <ElScrollbar>
-      <Step1 ref="step1Ref" v-model="model" v-show="currentStep === 0" @toggle-step="(val) => (isDisableBtn = !val)" />
+      <SiteChecking ref="step1Ref" v-model="model" v-show="currentStep === 0" @toggle-step="(val) => (isDisableBtn = !val)" />
+      <AppRegNew ref="step2Ref" v-model="model" v-show="currentStep === 1" />
     </ElScrollbar>
     <template #footer>
       <div class="flex justify-center gap-2">

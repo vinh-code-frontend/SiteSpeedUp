@@ -3,9 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import TenantForm from './TenantForm.vue';
 import { useStore } from '@/stores/global';
-
-// Giả sử bạn có biến loginUser lấy từ store hoặc context
-// Thay thế dòng dưới bằng logic thực tế lấy userId đăng nhập
+import { Refresh } from '@element-plus/icons-vue';
 
 const tenantFormRef = ref<InstanceType<typeof TenantForm>>();
 const loading = ref(true);
@@ -34,7 +32,10 @@ onMounted(fetchTenants);
   <div v-loading="loading">
     <div class="flex justify-between gap-2 items-center">
       <span>Total tenants: {{ tenants.length }}</span>
-      <ElButton type="primary" size="default" plain @click="tenantFormRef?.openForm()">Add Tenant</ElButton>
+      <div class="flex items-center">
+        <ElButton :icon="Refresh" class="w-9" @click="fetchTenants"></ElButton>
+        <ElButton type="primary" size="default" plain @click="tenantFormRef?.openForm()">Add Tenant</ElButton>
+      </div>
     </div>
     <ElEmpty v-if="!tenants.length" description="There are no available tenants" />
     <div v-if="tenants.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-3">
