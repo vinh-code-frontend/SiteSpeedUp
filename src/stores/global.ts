@@ -25,7 +25,9 @@ export const useStore = defineStore('global', {
         userDisplayName: item.userDisplayName,
         isPrivate: item.isPrivate,
         createdAt: formatFSTime(item.createdAt),
-        updatedAt: formatFSTime(item.updatedAt)
+        updatedAt: formatFSTime(item.updatedAt),
+        tenantId: item.tenantId,
+        clientId: item.clientId
       }));
     }
   }

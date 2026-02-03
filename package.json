@@ -16,7 +16,8 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "netlify:dev": "netlify dev",
-    "netlify:build": "netlify build"
+    "netlify:build": "netlify build",
+    "net": "netlify functions:serve --port 8888"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

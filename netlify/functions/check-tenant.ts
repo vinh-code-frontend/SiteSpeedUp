@@ -8,19 +8,27 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const res = await fetch(`https://${tenant}.sharepoint.com/_api/web`, { headers: { Accept: 'application/json' } });
+    const res = await fetch(`https://${tenant}.sharepoint.com/_vti_bin/client.svc`, { headers: { Authorization: 'Bearer' } });
+    const headers = Object.fromEntries(res.headers.entries());
+    const authArr = headers['www-authenticate'].split(',');
+    const config = {
+      tenantId: authArr[0].split(`"`)[1],
+      clientId: authArr[1].split(`"`)[1]
+    };
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         exists: [200, 401, 403].includes(res.status),
-        status: res.status
+        status: res.status,
+        config
       })
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       statusCode: 200,
-      body: JSON.stringify({ exists: false })
+      body: error
     };
   }
 };

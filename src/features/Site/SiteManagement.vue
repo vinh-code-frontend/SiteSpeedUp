@@ -2,31 +2,25 @@
 import { onMounted, ref } from 'vue';
 import SiteForm from './SiteForm.vue';
 import { useStore } from '@/stores/global';
+import { useLoading } from '@/hooks/useLoading';
+import { Refresh } from '@element-plus/icons-vue';
 
 const siteFormRef = ref<InstanceType<typeof SiteForm>>();
 const tableData: any[] = [];
-const loading = ref(false);
 const store = useStore();
+const { loading, execute } = useLoading();
 
-const fetchData = async () => {
-  loading.value = true;
-  try {
-    await store.getTenants();
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(fetchData);
+onMounted(() => execute(store.getTenants()));
 </script>
 
 <template>
-  <div v-loading="loading">
+  <div v-loading="loading" class="p-3">
     <div class="flex justify-between gap-2 items-center">
       <span>Total Sites: {{ tableData.length }}</span>
-      <ElButton type="primary" size="default" plain @click="siteFormRef?.openForm()">Add Site</ElButton>
+      <div>
+        <ElButton :icon="Refresh" class="w-9" @click="execute(store.getTenants())"></ElButton>
+        <ElButton type="primary" size="default" plain @click="siteFormRef?.openForm()">Add Site</ElButton>
+      </div>
     </div>
     <div class="max-w-full">
       <el-table :data="tableData" style="width: 100%">

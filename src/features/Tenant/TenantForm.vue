@@ -68,14 +68,17 @@ const handleSubmit = async () => {
     }
     loading.value = true;
 
-    const isTenantExisting = await pingTenant(form.value.title);
-    if (!isTenantExisting) {
+    const tenantConfig = await pingTenant(form.value.title);
+    if (!tenantConfig) {
       return;
     }
+    // console.log(tenantConfig);
 
     const data = {
       title: form.value.title.trim().toLowerCase(),
       userId: loginUser.value?.uid || '',
+      tenantId: tenantConfig.tenantId,
+      clientId: tenantConfig.clientId,
       userDisplayName: loginUser.value?.displayName || '',
       isPrivate: !!form.value.isPrivate,
       createdAt: serverTimestamp(),
@@ -87,7 +90,8 @@ const handleSubmit = async () => {
     handleClose();
     form.value.title = '';
     form.value.isPrivate = false;
-  } catch {
+  } catch (error) {
+    console.log(error);
     ElMessage.error('Failed to create tenant');
   } finally {
     loading.value = false;
