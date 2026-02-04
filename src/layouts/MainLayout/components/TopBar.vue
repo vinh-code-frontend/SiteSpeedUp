@@ -29,12 +29,12 @@ const onLogout = async () => {
       <Breadcrumb />
     </div>
     <div class="flex items-center gap-2">
-      <el-button type="default" circle @click="onLogout" :title="'Logout'">
+      <el-button circle :title="'Logout'" type="default" @click="onLogout">
         <el-icon><SwitchButton /></el-icon>
       </el-button>
       {{ loginUser?.displayName ?? loginUser?.email }}
       <ElAvatar :size="40">
-        <ElIcon><UserFilled /></ElIcon>
+        <el-icon><UserFilled /></el-icon>
       </ElAvatar>
     </div>
   </div>

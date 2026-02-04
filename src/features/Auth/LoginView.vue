@@ -66,22 +66,22 @@ const onLogin = async () => {
     <h2 class="form-label">Login Form</h2>
     <el-form
       ref="formRef"
+      asterisk-position="right"
+      class="login-form"
+      label-position="top"
+      label-width="100px"
       :model="form"
       :rules="rules"
-      label-width="100px"
-      class="login-form"
       @submit.prevent="onLogin"
-      label-position="top"
-      asterisk-position="right"
     >
       <el-form-item label="Email" prop="email">
         <el-input v-model="form.email" autocomplete="email" />
       </el-form-item>
       <el-form-item label="Password" prop="password">
-        <el-input v-model="form.password" type="password" autocomplete="current-password" />
+        <el-input v-model="form.password" autocomplete="current-password" type="password" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :loading="loading" @click="onLogin">Login</el-button>
+        <el-button :loading="loading" type="primary" @click="onLogin">Login</el-button>
         <el-button type="text" @click="router.push('/auth/register')">Go to Register</el-button>
       </el-form-item>
     </el-form>

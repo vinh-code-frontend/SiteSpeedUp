@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useValidator } from '@/hooks/useValidator';
 import { useStore } from '@/stores/global';
-import { isValidUrl, pingSite } from '@/utils/sharepoint';
+import { isValidUrl, normalizeSharePointSiteUrl, pingSite } from '@/utils/sharepoint';
 import { Check, MagicStick } from '@element-plus/icons-vue';
 import { ElNotification, type FormInstance, type FormRules } from 'element-plus';
 import { computed, ref, watch } from 'vue';
@@ -17,7 +17,7 @@ const tenants = computed(() => store.tenants);
 const model = defineModel<ISiteForm>('modelValue', { required: true });
 const isSiteValid = defineModel<boolean>('isSiteValid', { required: true });
 
-const { required, trimRequired } = useValidator();
+const { trimRequired, required } = useValidator();
 const formRef = ref<FormInstance>();
 const isPingDisable = ref(true);
 const loading = ref(false);
@@ -25,8 +25,7 @@ const loading = ref(false);
 const rules: FormRules = {
   tenantId: required(),
   site: [
-    required(),
-    trimRequired(),
+    ...trimRequired(),
     {
       validator(_, value: string, callback) {
         if (typeof value !== 'string') {
@@ -65,9 +64,11 @@ const handleVerify = async () => {
     return;
   }
   loading.value = true;
-  const ping = await pingSite(model.value!.site);
-  isSiteValid.value = ping;
-  if (!ping) {
+  const isValid = await pingSite(model.value!.site);
+  isSiteValid.value = isValid;
+  if (isValid) {
+    model.value.site = normalizeSharePointSiteUrl(model.value.site);
+  } else {
     ElNotification({
       title: 'Error',
       message: "This site doesn'n exist!",
@@ -75,6 +76,7 @@ const handleVerify = async () => {
       duration: 3000
     });
   }
+
   loading.value = false;
 };
 
@@ -91,25 +93,31 @@ defineExpose({
 </script>
 
 <template>
-  <ElForm ref="formRef" :model="model" :rules="rules" require-asterisk-position="right" label-position="top">
-    <ElFormItem prop="tenant" label="Select tenant">
-      <ElSelect v-model="model.tenantFBId" size="large" class="max-w-52" placeholder="Select your tenant" clearable>
-        <ElOption v-for="item in tenants" :key="item.id" :label="item.title" :value="item.id!" />
-      </ElSelect>
-    </ElFormItem>
-    <ElFormItem v-if="model.tenantFBId" prop="site" label="Site">
+  <el-form ref="formRef" label-position="top" :model="model" require-asterisk-position="right" :rules="rules">
+    <el-form-item label="Select tenant" prop="tenant">
+      <el-select v-model="model.tenantFBId" class="max-w-52" clearable placeholder="Select your tenant" size="large">
+        <el-option v-for="item in tenants" :key="item.id" :label="item.title" :value="item.id!" />
+      </el-select>
+    </el-form-item>
+    <el-form-item v-if="model.tenantFBId" label="Site" prop="site">
       <div class="flex w-full gap-2">
-        <ElInput v-model="model.site" size="large" class="flex-1" placeholder="Enter your site..." @input="isSiteValid = false"></ElInput>
-        <ElButton :type="isSiteValid ? 'success' : 'danger'" size="large" :disabled="isPingDisable || loading || isSiteValid" :loading="loading" @click="handleVerify">
-          <ElIcon class="font-bold !text-[20px]">
+        <el-input v-model="model.site" class="flex-1" placeholder="Enter your site..." size="large" @input="isSiteValid = false"></el-input>
+        <el-button
+          :disabled="isPingDisable || loading || isSiteValid"
+          :loading="loading"
+          size="large"
+          :type="isSiteValid ? 'success' : 'danger'"
+          @click="handleVerify"
+        >
+          <el-icon class="font-bold !text-[20px]">
             <Check v-if="isSiteValid" />
             <MagicStick v-else />
-          </ElIcon>
-        </ElButton>
+          </el-icon>
+        </el-button>
       </div>
       <div class="italic text-xs">Before go to next step, please verify your entered site to make sure your site exists.</div>
-    </ElFormItem>
-  </ElForm>
+    </el-form-item>
+  </el-form>
 </template>
 
 <style scoped lang="scss"></style>

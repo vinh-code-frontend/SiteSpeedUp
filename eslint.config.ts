@@ -28,11 +28,12 @@ export default defineConfigWithVueTs(
   // Add rule to show unused imports as warnings instead of errors
   {
     rules: {
-      'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
-      '@typescript-eslint/no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+      'no-unused-vars': ['warn', { vars: 'all', args: 'all', ignoreRestSiblings: false }],
+      '@typescript-eslint/no-unused-vars': ['warn', { vars: 'all', args: 'all', ignoreRestSiblings: false }],
       '@typescript-eslint/no-explicit-any': ['off'],
       curly: ['warn', 'all'], // Warn if braces are not used for all control statements
-      'vue/multi-word-component-names': ['off']
+      'vue/multi-word-component-names': ['off'],
+      'vue/attributes-order': ['warn', { alphabetical: true }]
     }
   }
 );

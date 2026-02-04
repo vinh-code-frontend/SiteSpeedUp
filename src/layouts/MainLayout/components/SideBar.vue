@@ -14,14 +14,14 @@ const route = useRoute();
       <img src="../../../assets/ssu.png" />
     </div>
     <div class="h-[calc(100dvh-3.5rem)]">
-      <ElScrollbar>
-        <ElMenu :default-active="route.path" class="w-[var(--sidebar-width)] !border-0" :collapse="isCollapse" router>
+      <el-scrollbar>
+        <ElMenu class="w-[var(--sidebar-width)] !border-0" :collapse="isCollapse" :default-active="route.path" router>
           <ElMenuItem v-for="item in menu" :key="item.path" :index="item.path">
-            <ElIcon size="14" class="!mr-2"><Component :is="item.icon" /></ElIcon>
+            <el-icon class="!mr-2" size="14"><Component :is="item.icon" /></el-icon>
             <template #title>{{ item.title }}</template>
           </ElMenuItem>
         </ElMenu>
-      </ElScrollbar>
+      </el-scrollbar>
     </div>
   </div>
 </template>

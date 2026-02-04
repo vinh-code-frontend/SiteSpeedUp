@@ -44,22 +44,20 @@ export const pingSite = async (site: string) => {
 };
 
 export class SPGuideUrls {
-  private tenantName?: string;
   private siteName?: string;
 
-  constructor(tenantName?: string, siteName?: string) {
-    this.tenantName = tenantName;
+  constructor(siteName?: string) {
     this.siteName = siteName;
   }
 
   appRegNew() {
-    return `https://${this.tenantName}.sharepoint.com/sites/${this.siteName}/_layouts/15/appregnew.aspx`;
+    return `${this.siteName}/_layouts/15/appregnew.aspx`;
   }
   appInv() {
-    return `https://${this.tenantName}.sharepoint.com/sites/${this.siteName}/_layouts/15/appinv.aspx`;
+    return `${this.siteName}/_layouts/15/appinv.aspx`;
   }
   appPrincipal() {
-    return `https://${this.tenantName}.sharepoint.com/sites/${this.siteName}/_layouts/15/appprincipals.aspx`;
+    return `${this.siteName}/_layouts/15/appprincipals.aspx`;
   }
   accessTokenUrl(tenantId: string) {
     return `https://accounts.accesscontrol.windows.net/${tenantId}/tokens/OAuth/2`;

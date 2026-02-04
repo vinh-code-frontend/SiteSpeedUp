@@ -13,7 +13,7 @@ export const handler: Handler = async (event) => {
     const authArr = headers['www-authenticate'].split(',');
     const config = {
       tenantId: authArr[0].split(`"`)[1],
-      clientId: authArr[1].split(`"`)[1]
+      clientIdResource: authArr[1].split(`"`)[1]
     };
 
     return {

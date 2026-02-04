@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--el-color-primary)'
+        primary: 'var(--el-color-primary)',
+        success: 'var(--el-color-success)'
       }
     }
   },

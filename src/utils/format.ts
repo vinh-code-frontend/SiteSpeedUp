@@ -12,6 +12,8 @@ export const formatTenant = (item: Record<string, any> | null) => {
     userDisplayName: item.userDisplayName,
     isPrivate: item.isPrivate,
     createdAt: formatFSTime(item.createdAt),
-    updatedAt: formatFSTime(item.updatedAt)
+    updatedAt: formatFSTime(item.updatedAt),
+    tenantId: item.tenantId,
+    clientIdResource: item.clientIdResource
   } satisfies ITenant;
 };

@@ -9,11 +9,11 @@ import SideBar from './components/SideBar.vue';
     <main id="manage-main" class="w-full transition-all h-dvh overflow-hidden">
       <TopBar />
       <div class="w-full h-[calc(100dvh-3.5rem)]">
-        <ElScrollbar>
+        <el-scrollbar>
           <div class="min-h-[calc(100dvh-3.5rem)]">
-            <RouterView />
+            <router-view />
           </div>
-        </ElScrollbar>
+        </el-scrollbar>
       </div>
     </main>
   </div>

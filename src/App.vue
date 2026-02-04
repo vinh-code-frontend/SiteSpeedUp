@@ -11,9 +11,9 @@ const messageConfig = reactive({
 </script>
 
 <template>
-  <ElConfigProvider :card="cardConfig" :message="messageConfig">
-    <RouterView />
-  </ElConfigProvider>
+  <el-config-provider :card="cardConfig" :message="messageConfig">
+    <router-view />
+  </el-config-provider>
 </template>
 
 <style scoped lang="scss"></style>

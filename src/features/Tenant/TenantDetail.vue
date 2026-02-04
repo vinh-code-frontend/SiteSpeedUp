@@ -32,13 +32,13 @@ onMounted(async () => {
     <template v-if="tenant">
       <h2 class="text-xl font-bold mb-4 text-primary underline">{{ title }}</h2>
       <ElCollapse v-model="expand" expand-icon-position="left">
-        <ElCollapseItem title="Tenant Info" name="1">
-          <ElDescriptions v-if="tenant" :column="1" border size="default">
+        <ElCollapseItem name="1" title="Tenant Info">
+          <ElDescriptions v-if="tenant" border :column="1" size="default">
             <ElDescriptionsItem label="Title"> {{ tenant.title }} </ElDescriptionsItem>
             <ElDescriptionsItem label="Added by"> {{ tenant.userDisplayName }} </ElDescriptionsItem>
             <ElDescriptionsItem label="Created At"> {{ tenant.createdAt }} </ElDescriptionsItem>
             <ElDescriptionsItem label="Type">
-              <ElTag :type="tenant.isPrivate ? 'warning' : 'success'"> {{ tenant.isPrivate ? 'Private' : 'Public' }} </ElTag>
+              <el-tag :type="tenant.isPrivate ? 'warning' : 'success'"> {{ tenant.isPrivate ? 'Private' : 'Public' }} </el-tag>
             </ElDescriptionsItem>
           </ElDescriptions>
         </ElCollapseItem>

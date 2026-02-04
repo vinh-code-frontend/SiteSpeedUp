@@ -27,8 +27,9 @@ export const useStore = defineStore('global', {
         createdAt: formatFSTime(item.createdAt),
         updatedAt: formatFSTime(item.updatedAt),
         tenantId: item.tenantId,
-        clientId: item.clientId
+        clientIdResource: item.clientIdResource
       }));
+      console.log(this.tenants);
     }
   }
 });

@@ -29,7 +29,7 @@ const breadcrumbs = computed(() => {
 
 <template>
   <ElBreadcrumb>
-    <ElBreadcrumbItem v-for="(item, index) in breadcrumbs" :to="item.path ? { path: item.path } : {}" :key="index">{{ item.title }}</ElBreadcrumbItem>
+    <ElBreadcrumbItem v-for="(item, index) in breadcrumbs" :key="index" :to="item.path ? { path: item.path } : {}">{{ item.title }}</ElBreadcrumbItem>
   </ElBreadcrumb>
 </template>
 

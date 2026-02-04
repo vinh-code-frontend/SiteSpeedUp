@@ -78,7 +78,7 @@ const handleSubmit = async () => {
       title: form.value.title.trim().toLowerCase(),
       userId: loginUser.value?.uid || '',
       tenantId: tenantConfig.tenantId,
-      clientId: tenantConfig.clientId,
+      clientIdResource: tenantConfig.clientIdResource,
       userDisplayName: loginUser.value?.displayName || '',
       isPrivate: !!form.value.isPrivate,
       createdAt: serverTimestamp(),
@@ -104,22 +104,22 @@ defineExpose({
 </script>
 
 <template>
-  <ElDialog v-model="visible" title="Add Tenant" class="max-w-md !w-[96%]" destroy-on-close @close="handleClose">
-    <ElForm ref="formRef" :model="form" :rules="rules" label-position="top" require-asterisk-position="right" label-width="100px">
-      <ElFormItem label="Title" prop="title">
-        <ElInput v-model="form.title" placeholder="Enter tenant title" />
-      </ElFormItem>
-      <ElFormItem label="Private" prop="isPrivate">
+  <el-dialog v-model="visible" class="max-w-md !w-[96%]" destroy-on-close title="Add Tenant" @close="handleClose">
+    <el-form ref="formRef" label-position="top" label-width="100px" :model="form" require-asterisk-position="right" :rules="rules">
+      <el-form-item label="Title" prop="title">
+        <el-input v-model="form.title" placeholder="Enter tenant title" />
+      </el-form-item>
+      <el-form-item label="Private" prop="isPrivate">
         <el-switch v-model="form.isPrivate" />
-      </ElFormItem>
-    </ElForm>
+      </el-form-item>
+    </el-form>
     <template #footer>
       <div class="flex justify-center gap-2">
-        <ElButton type="primary" :loading="loading" @click="handleSubmit">Save</ElButton>
-        <ElButton class="!ml-0" @click="handleClose">Cancel</ElButton>
+        <el-button :loading="loading" type="primary" @click="handleSubmit">Save</el-button>
+        <el-button class="!ml-0" @click="handleClose">Cancel</el-button>
       </div>
     </template>
-  </ElDialog>
+  </el-dialog>
 </template>
 
 <style scoped></style>
